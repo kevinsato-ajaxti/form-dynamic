@@ -12,6 +12,7 @@ import { TreeSelectModule } from 'primeng/treeselect';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { InputTextModule } from 'primeng/inputtext';
+import { EditorModule } from 'primeng/editor';
 import { FormDynamicAngularComponent } from './form-dynamic-angular.component';
 import { MessageService } from 'primeng/api';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -57,6 +58,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ReactiveFormsModule,
     HttpClientModule,
     OverlayPanelModule,
+    EditorModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

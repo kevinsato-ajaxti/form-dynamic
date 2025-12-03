@@ -1,412 +1,726 @@
 <div>
-    <div *ngIf="title" class="div-title">
-        <span translate={{title}}></span>
-        <div *ngIf="subTitle" class="flex subtitle">
-            <span translate={{subTitle}}></span>
-        </div>
-        <p-divider></p-divider>
+  <div *ngIf="title" class="div-title">
+    <span translate="{{ title }}"></span>
+    <div *ngIf="subTitle" class="flex subtitle">
+      <span translate="{{ subTitle }}"></span>
     </div>
-    <form *ngIf="control" [formGroup]="control">
-        <div class="grid">
-            <div *ngFor="let item of form" class="{{item.col}} col-12">
-                <label *ngIf="item.label && !item.hideLabelTop">{{item.label}}</label>
-                <label *ngIf="item.required && item.label" class="danger-text ml-2">*</label>
+    <p-divider></p-divider>
+  </div>
+  <form *ngIf="control" [formGroup]="control">
+    <div class="grid">
+      <div *ngFor="let item of form" class="{{ item.col }} col-12">
+        <label *ngIf="item.label && !item.hideLabelTop">{{ item.label }}</label>
+        <label *ngIf="item.required && item.label" class="danger-text ml-2"
+          >*</label
+        >
 
-                <div class="mt-2">
-                    <!-- text -->
-                    <input id={{item.id}} [ngClass]="{
+        <div class="mt-2">
+          <!-- text -->
+          <input
+            id="{{ item.id }}"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                validateForm && control.controls[item.formControl].errors
+            }"
+            pInputText
+            placeholder="{{ item.placeholder }}"
+            *ngIf="item.type == 'text' || item.type == 'number'"
+            type="{{ item.type }}"
+            formControlName="{{ item.formControl }}"
+            class="w-full"
+          />
+
+          <p-editor
+            *ngIf="item.type == 'editor'"
+            formControlName="{{ item.formControl }}"
+            [style]="{ height: '320px' }"
+          />
+
+          <!-- select -->
+          <p-dropdown
+            id="{{ item.id }}"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                validateForm && control.controls[item.formControl].errors
+            }"
+            [filter]="item.search"
+            emptyFilterMessage="Nenhum dado encontrado"
+            emptyMessage="Nenhum dado encontrado"
+            placeholder="{{ item.placeholder }}"
+            styleClass="w-full p-0"
+            (onChange)="onChange(item.onChange)"
+            *ngIf="item.type === 'select'"
+            [showClear]="true"
+            [options]="item.options"
+            formControlName="{{ item.formControl }}"
+            optionLabel="description"
+            (onClear)="clickCLear(item.onCLear)"
+          ></p-dropdown>
+
+          <!-- currency  -->
+          <p-inputNumber
+            id="{{ item.id }}"
+            *ngIf="item.type === 'currency'"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                validateForm && control.controls[item.formControl].errors
+            }"
+            formControlName="{{ item.formControl }}"
+            placeholder="{{ item.placeholder }}"
+            inputStyleClass="w-full"
+            styleClass="w-full"
+            (onKeyDown)="onChange(item.onChange)"
+            mode="currency"
+            [min]="0"
+            currency="BRL"
+          >
+          </p-inputNumber>
+
+          <!-- mask  -->
+          <p-inputMask
+            id="{{ item.id }}"
+            *ngIf="item.type === 'mask'"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                validateForm && control.controls[item.formControl].errors
+            }"
+            formControlName="{{ item.formControl }}"
+            placeholder="{{ item.placeholder }}"
+            styleClass="w-full"
+            (onComplete)="onChange(item.onChange)"
+            mask="{{ item.mask }}"
+            unmask="{{ item.unmask }}"
+            (onClear)="clickCLear(item.onCLear)"
+            showClear="true"
+          ></p-inputMask>
+
+          <!-- treeSelect -->
+          <p-treeSelect
+            id="{{ item.id }}"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                validateForm && control.controls[item.formControl].errors
+            }"
+            placeholder="{{ item.placeholder }}"
+            (onNodeSelect)="onChange(item.onChange)"
+            *ngIf="item.type === 'tree-select'"
+            containerStyleClass="w-full p-0"
+            formControlName="{{ item.formControl }}"
+            [options]="item.treeSelectOptions"
+            [filter]="true"
+            [filterInputAutoFocus]="true"
+            emptyMessage="Nenhum dado encontrado"
+            [showClear]="true"
+            (onClear)="clickCLear(item.onCLear)"
+          ></p-treeSelect>
+
+          <!-- autoComplete -->
+          <p-autoComplete
+            inputId="{{ item.id }}"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                validateForm && control.controls[item.formControl].errors
+            }"
+            placeholder="{{ item.placeholder }}"
+            styleClass="w-full p-0"
+            [inputStyle]="{ width: '100%' }"
+            *ngIf="item.type === 'autocomplete'"
+            (onSelect)="onChange(item.onChange)"
+            formControlName="{{ item.formControl }}"
+            [suggestions]="filteredAutoComplete"
+            (completeMethod)="filterAutoComplete($event, item.options)"
+            [forceSelection]="false"
+            [showEmptyMessage]="true"
+            emptyMessage="Nenhum dado encontrado"
+            dataKey="code"
+            field="description"
+            showClear="true"
+            (onClear)="clickCLear(item.onCLear)"
+          ></p-autoComplete>
+
+          <!-- date -->
+          <p-calendar
+            id="{{ item.id }}"
+            view="{{ item.viewDate }}"
+            *ngIf="item.type === 'date'"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                validateForm && control.controls[item.formControl].errors
+            }"
+            formControlName="{{ item.formControl }}"
+            styleClass="w-full"
+            [numberOfMonths]="numberOfMonthsDate(item.numberOfMonthsDate)"
+            [selectionMode]="selectionMode(item.selectionMode)"
+            (onFocus)="onChange(item.onFocusDate)"
+            [maxDate]="item.maxDate"
+            [minDate]="item.minDate"
+            dateFormat="{{ item.dateFormat }}"
+            (onSelect)="onChange(item.onChange)"
+            [iconDisplay]="'input'"
+            placeholder="{{ item.placeholder }}"
+            [showIcon]="true"
+            [showTime]="item.showTime"
+            [timeOnly]="item.timeOnly"
+          ></p-calendar>
+
+          <!-- textarea -->
+          <div *ngIf="item.type === 'text-area'" class="text-right">
+            <textarea
+              id="{{ item.id }}"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  validateForm && control.controls[item.formControl].errors
+              }"
+              placeholder="{{ item.placeholder }}"
+              class="w-full"
+              maxlength="{{ item.maxlength }}"
+              counterTemplate="{1} of 50, {0} remaining"
+              counter="display"
+              (attr.change)="onChange(item.onChange)"
+              pInputTextarea
+              formControlName="{{ item.formControl }}"
+              rows="{{ item.rowsTextArea }}"
+            ></textarea>
+            <small *ngIf="item.maxlength" id="username-help">
+              {{ control.controls[item.formControl].value.length }}/{{
+                item.maxlength
+              }}
+            </small>
+          </div>
+
+          <!-- checkbox -->
+          <div *ngIf="item.type == 'check-box'">
+            <p-checkbox
+              id="{{ item.id }}"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  validateForm && control.controls[item.formControl].errors
+              }"
+              (onChange)="onChange(item.onChange)"
+              binary="true"
+              formControlName="{{ item.formControl }}"
+              value="{{ item.formControl }}"
+              label="{{ item.label }}"
+            ></p-checkbox>
+          </div>
+
+          <!-- checkbox  multiple -->
+          <div
+            id="{{ item.id }}"
+            *ngIf="item.type === 'check-box-multi'"
+            class="flex gap-3"
+          >
+            <div
+              formArrayName="{{ item.formControl }}"
+              *ngFor="let list of item.options; let i = index"
+              class="flex align-items-center gap-2"
+            >
+              <div [formGroupName]="i">
+                <p-checkbox
+                  id="{{ item.id }}"
+                  [ngClass]="{
                     'ng-invalid ng-dirty':
-                    validateForm && control.controls[item.formControl].errors
-                  }" pInputText placeholder={{item.placeholder}} *ngIf="item.type == 'text' || item.type == 'number' "
-                        type={{item.type}} formControlName={{item.formControl}} class="w-full" />
+                      validateForm && control.controls[item.formControl].errors
+                  }"
+                  (onChange)="onChange(item.onChange)"
+                  binary="true"
+                  formControlName="{{ list.code }}"
+                  label="{{ list.description }}"
+                ></p-checkbox>
+              </div>
+            </div>
+          </div>
 
-                    <!-- select -->
-                    <p-dropdown id={{item.id}} [ngClass]="{
-                    'ng-invalid ng-dirty':
-                    validateForm && control.controls[item.formControl].errors
-                  }" [filter]=item.search emptyFilterMessage="Nenhum dado encontrado"
-                        emptyMessage="Nenhum dado encontrado" placeholder={{item.placeholder}} styleClass="w-full p-0"
-                        (onChange)="onChange(item.onChange)" *ngIf="item.type === 'select'" [showClear]="true"
-                        [options]="item.options" formControlName={{item.formControl}} optionLabel="description"
-                        (onClear)="clickCLear(item.onCLear)"></p-dropdown>
+          <!-- button -->
+          <p-button
+            id="{{ item.id }}"
+            *ngIf="item.type == 'button'"
+            styleClass="{{ item.buttonClass }} w-full mt-3"
+            (click)="item.onCLick()"
+            [disabled]="item.disabled"
+            icon="{{ item.iconButton }}"
+            label="{{ item.label }}"
+          ></p-button>
 
-                    <!-- currency  -->
-                    <p-inputNumber id={{item.id}} *ngIf="item.type === 'currency'" [ngClass]="{
-                    'ng-invalid ng-dirty':
-                    validateForm && control.controls[item.formControl].errors
-                  }" formControlName={{item.formControl}} placeholder={{item.placeholder}} inputStyleClass="w-full"
-                        styleClass="w-full" (onKeyDown)="onChange(item.onChange)" mode="currency" [min]="0"
-                        currency="BRL">
-                    </p-inputNumber>
+          <!-- can  -->
+          <div id="{{ item.id }}" class="area" *ngIf="item.type == 'can'">
+            <video autoplay="true" id="webCamera"></video>
 
-                    <!-- mask  -->
-                    <p-inputMask id={{item.id}} *ngIf="item.type === 'mask'" [ngClass]="{
-                    'ng-invalid ng-dirty':
-                    validateForm && control.controls[item.formControl].errors
-                  }" formControlName={{item.formControl}} placeholder={{item.placeholder}} styleClass="w-full"
-                        (onComplete)="onChange(item.onChange)" mask={{item.mask}} unmask={{item.unmask}}
-                        (onClear)="clickCLear(item.onCLear)" showClear="true"></p-inputMask>
+            <input type="text" id="base_img" name="base_img" />
+            <button type="button" onclick="takeSnapShot()">
+              Tirar foto e salvar
+            </button>
 
-                    <!-- treeSelect -->
-                    <p-treeSelect id={{item.id}} [ngClass]="{
-                    'ng-invalid ng-dirty':
-                    validateForm && control.controls[item.formControl].errors
-                  }" placeholder={{item.placeholder}} (onNodeSelect)="onChange(item.onChange)"
-                        *ngIf="item.type === 'tree-select'" containerStyleClass="w-full p-0"
-                        formControlName={{item.formControl}} [options]="item.treeSelectOptions" [filter]="true"
-                        [filterInputAutoFocus]="true" emptyMessage="Nenhum dado encontrado" [showClear]="true"
-                        (onClear)="clickCLear(item.onCLear)"></p-treeSelect>
+            <img id="imagemConvertida" />
+            <p id="caminhoImagem" class="caminho-imagem">
+              <a href="" target="_blank" rel="noopener"></a>
+            </p>
+            <script src="script.js"></script>
+          </div>
 
-                    <!-- autoComplete -->
-                    <p-autoComplete inputId={{item.id}} [ngClass]="{
-                    'ng-invalid ng-dirty':
-                    validateForm && control.controls[item.formControl].errors
-                  }" placeholder={{item.placeholder}} styleClass="w-full p-0" [inputStyle]="{'width':'100%'}"
-                        *ngIf="item.type === 'autocomplete'" (onSelect)=" onChange(item.onChange)"
-                        formControlName={{item.formControl}} [suggestions]="filteredAutoComplete"
-                        (completeMethod)="filterAutoComplete($event, item.options)" [forceSelection]="false"
-                        [showEmptyMessage]="true" emptyMessage="Nenhum dado encontrado" dataKey="code"
-                        field="description" showClear=true (onClear)="clickCLear(item.onCLear)"></p-autoComplete>
+          <!-- upload files -->
+          <div
+            id="{{ item.id }}"
+            *ngIf="item.type === 'upload-files' && !item.disabled"
+            class="drag-image"
+            [style.border]="
+              validateForm && control.controls[item.formControl].errors
+                ? ' 1px dashed #f18282'
+                : ' 1px dashed #d1d5db'
+            "
+          >
+            <i *ngIf="filesView.length === 0" class="pi pi-cloud-upload"></i>
+            <p *ngIf="filesView.length === 0">
+              Clique ou arraste e solte um arquivo para anexar
+            </p>
+            <span *ngIf="filesView.length === 0">{{
+              item.msgAcceptFiles
+            }}</span>
+            <input
+              id="fileInput"
+              type="file"
+              [multiple]="item.multileFile"
+              [accept]="item.acceptFiles"
+              (change)="
+                onSelectFile(item.formControl, $event, item.multileFile)
+              "
+            />
+            <div *ngFor="let f of filesView">
+              <div *ngIf="f.type && f.type.includes('image')">
+                <label class="preview-img">
+                  <img *ngIf="!f.content" src="{{ getUrl(f) }}" />
+                  <img *ngIf="f.content" src="{{ f.content }}" />
+                  <span *ngIf="item.viewNameFile">{{ f.name }}</span>
+                  <input
+                    type="file"
+                    [multiple]="item.multileFile"
+                    [accept]="item.acceptFiles"
+                    (change)="
+                      onSelectFile(item.formControl, $event, item.multileFile)
+                    "
+                  />
+                  <label>
+                    <i
+                      class="pi pi-times remove-file absolute"
+                      (click)="onRemove(item.formControl, f)"
+                    ></i
+                  ></label>
+                </label>
+              </div>
+              <div *ngIf="f.type && !f.type.includes('image')">
+                <label class="preview-img h-0 max-w-0 mh-75 m-0">
+                  <label class="mr-3">{{ f.name }}</label>
+                  <input
+                    type="file"
+                    [multiple]="item.multileFile"
+                    [accept]="item.acceptFiles"
+                    (change)="
+                      onSelectFile(item.formControl, $event, item.multileFile)
+                    "
+                  />
+                  <label>
+                    <i
+                      class="pi pi-times remove-file absolute"
+                      (click)="onRemove(f)"
+                    ></i
+                  ></label>
+                </label>
+              </div>
+            </div>
+          </div>
 
-                    <!-- date -->
-                    <p-calendar id={{item.id}} view="{{item.viewDate}}" *ngIf="item.type === 'date'" [ngClass]="{
-                        'ng-invalid ng-dirty':
-                        validateForm && control.controls[item.formControl].errors
-                    }" formControlName={{item.formControl}} styleClass="w-full"
-                        [numberOfMonths]=numberOfMonthsDate(item.numberOfMonthsDate)
-                        [selectionMode]=selectionMode(item.selectionMode) (onFocus)="onChange(item.onFocusDate)"
-                        [maxDate]="item.maxDate" [minDate]="item.minDate" dateFormat="{{item.dateFormat}}"
-                        (onSelect)="onChange(item.onChange)" [iconDisplay]="'input'" placeholder={{item.placeholder}}
-                        [showIcon]="true" [showTime]="item.showTime" [timeOnly]="item.timeOnly"></p-calendar>
-
-                    <!-- textarea -->
-                    <div *ngIf="item.type === 'text-area'" class="text-right">
-                        <textarea id={{item.id}} [ngClass]="{
-                    'ng-invalid ng-dirty':
-                    validateForm && control.controls[item.formControl].errors
-                  }" placeholder={{item.placeholder}} class="w-full" maxlength="{{item.maxlength}}"
-                            counterTemplate="{1} of 50, {0} remaining" counter="display"
-                            (attr.change)="onChange(item.onChange)" pInputTextarea formControlName={{item.formControl}}
-                            rows={{item.rowsTextArea}}></textarea>
-                        <small *ngIf="item.maxlength" id="username-help">
-                            {{control.controls[item.formControl].value.length}}/{{item.maxlength}}
-                        </small>
-                    </div>
-
-                    <!-- checkbox -->
-                    <div *ngIf="item.type == 'check-box'">
-                        <p-checkbox id={{item.id}} [ngClass]="{
-                        'ng-invalid ng-dirty':
-                        validateForm && control.controls[item.formControl].errors
-                      }" (onChange)="onChange(item.onChange)" binary="true" formControlName={{item.formControl}}
-                            value={{item.formControl}} label={{item.label}}></p-checkbox>
-                    </div>
-
-                    <!-- checkbox  multiple -->
-                    <div id={{item.id}} *ngIf="item.type === 'check-box-multi'" class="flex gap-3">
-                        <div formArrayName="{{item.formControl}}" *ngFor="let list of item.options; let i = index"
-                            class="flex align-items-center gap-2">
-                            <div [formGroupName]="i">
-                                <p-checkbox id={{item.id}} [ngClass]="{
-                                    'ng-invalid ng-dirty':
-                                    validateForm && control.controls[item.formControl].errors
-                                }" (onChange)="onChange(item.onChange)" binary="true" formControlName="{{list.code}}"
-                                    label={{list.description}}></p-checkbox>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- button -->
-                    <p-button id={{item.id}} *ngIf="item.type == 'button'" styleClass='{{item.buttonClass}} w-full mt-3'
-                        (click)="item.onCLick()" [disabled]=item.disabled icon={{item.iconButton}}
-                        label={{item.label}}></p-button>
-
-                    <!-- can  -->
-                    <div id={{item.id}} class="area" *ngIf="item.type == 'can'">
-                        <video autoplay="true" id="webCamera">
-                        </video>
-
-                        <input type="text" id="base_img" name="base_img">
-                        <button type="button" onclick="takeSnapShot()">Tirar foto e salvar</button>
-
-                        <img id="imagemConvertida">
-                        <p id="caminhoImagem" class="caminho-imagem"><a href="" target="_blank" rel="noopener"></a></p>
-                        <script src="script.js"></script>
-                    </div>
-
-                    <!-- upload files -->
-                    <div id={{item.id}} *ngIf="item.type === 'upload-files' && !item.disabled " class="drag-image"
-                        [style.border]="validateForm && control.controls[item.formControl].errors ? ' 1px dashed #f18282' : ' 1px dashed #d1d5db'">
-                        <i *ngIf="filesView.length === 0" class="pi pi-cloud-upload"></i>
-                        <p *ngIf="filesView.length === 0">Clique ou arraste e solte um arquivo para anexar</p>
-                        <span *ngIf="filesView.length === 0">{{item.msgAcceptFiles}}</span>
-                        <input id="fileInput" type="file" [multiple]=item.multileFile [accept]="item.acceptFiles"
-                            (change)="onSelectFile(item.formControl, $event, item.multileFile)" />
-                        <div *ngFor="let f of filesView">
-                            <div *ngIf="f.type && f.type.includes('image')">
-                                <label class="preview-img">
-                                    <img *ngIf="!f.content" src='{{getUrl(f)}}'>
-                                    <img *ngIf="f.content" src='{{f.content}}'>
-                                    <span *ngIf="item.viewNameFile">{{ f.name }}</span>
-                                    <input type="file" [multiple]=item.multileFile [accept]="item.acceptFiles"
-                                        (change)="onSelectFile(item.formControl, $event,item.multileFile)" />
-                                    <label> <i class="pi pi-times remove-file absolute"
-                                            (click)="onRemove(item.formControl, f)"></i></label>
-                                </label>
-                            </div>
-                            <div *ngIf="f.type && !f.type.includes('image')">
-                                <label class="preview-img h-0 max-w-0 mh-75 m-0">
-                                    <label class="mr-3">{{ f.name }}</label>
-                                    <input type="file" [multiple]=item.multileFile [accept]="item.acceptFiles"
-                                        (change)="onSelectFile(item.formControl, $event,item.multileFile)" />
-                                    <label> <i class="pi pi-times remove-file absolute"
-                                            (click)="onRemove(f)"></i></label>
-
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- upload files disabled -->
-                    <!-- <p-fileUpload mode="basic" formControlName="{{item.formControl}}" chooseLabel="Choose"
+          <!-- upload files disabled -->
+          <!-- <p-fileUpload mode="basic" formControlName="{{item.formControl}}" chooseLabel="Choose"
                         chooseIcon="pi pi-upload" accept="image/*" maxFileSize="1000000" /> -->
 
-                    <div id={{item.id}} *ngIf="item.type === 'upload-files' && item.disabled ">
-                        <p-button (click)="op.toggle($event)" icon="pi pi-paperclip"
-                            label="Arquivos anexados"></p-button>
+          <div
+            id="{{ item.id }}"
+            *ngIf="item.type === 'upload-files' && item.disabled"
+          >
+            <p-button
+              (click)="op.toggle($event)"
+              icon="pi pi-paperclip"
+              label="Arquivos anexados"
+            ></p-button>
 
-                        <p-overlayPanel #op [style]="{'width': '450px'}" [showCloseIcon]="true">
-                            <ng-template pTemplate="content">
-                                <p-table *ngIf="files.length > 0" [value]="files" selectionMode="single"
-                                    [(selection)]="selectedProduct" (onRowSelect)="onRowSelect($event, op)"
-                                    responsiveLayout="scroll">
-                                    <ng-template pTemplate="header">
-                                        <tr>
-                                            <th pSortableColumn="name">Nome<p-sortIcon field="name"></p-sortIcon></th>
-                                            <th></th>
-                                        </tr>
-                                    </ng-template>
-                                    <ng-template pTemplate="body" let-rowData let-file>
-                                        <tr>
-                                            <td *ngIf="item.viewNameFile">{{file.name}}</td>
-                                            <td> <p-button *ngIf="item.onCLick" icon="pi pi-download"
-                                                    (click)='item.onCLick(file)'></p-button>
-                                            </td>
-                                        </tr>
-                                    </ng-template>
-                                </p-table>
-                                <div *ngIf="files.length === 0" class="p-10">
-                                    <label>Nenhum arquivo anexado</label>
-                                </div>
-                            </ng-template>
-                        </p-overlayPanel>
-                    </div>
+            <p-overlayPanel
+              #op
+              [style]="{ width: '450px' }"
+              [showCloseIcon]="true"
+            >
+              <ng-template pTemplate="content">
+                <p-table
+                  *ngIf="files.length > 0"
+                  [value]="files"
+                  selectionMode="single"
+                  [(selection)]="selectedProduct"
+                  (onRowSelect)="onRowSelect($event, op)"
+                  responsiveLayout="scroll"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th pSortableColumn="name">
+                        Nome<p-sortIcon field="name"></p-sortIcon>
+                      </th>
+                      <th></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-rowData let-file>
+                    <tr>
+                      <td *ngIf="item.viewNameFile">{{ file.name }}</td>
+                      <td>
+                        <p-button
+                          *ngIf="item.onCLick"
+                          icon="pi pi-download"
+                          (click)="item.onCLick(file)"
+                        ></p-button>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+                <div *ngIf="files.length === 0" class="p-10">
+                  <label>Nenhum arquivo anexado</label>
+                </div>
+              </ng-template>
+            </p-overlayPanel>
+          </div>
 
-                    <!-- list -->
-                    <ul id={{item.id}} *ngIf="item.type === 'list' && item.options">
-                        <li *ngFor="let list of item.options">{{list.description}}</li>
-                    </ul>
+          <!-- list -->
+          <ul id="{{ item.id }}" *ngIf="item.type === 'list' && item.options">
+            <li *ngFor="let list of item.options">{{ list.description }}</li>
+          </ul>
 
-                    <!-- multi -->
-                    <p-multiSelect id={{item.id}} [ngClass]="{
-                    'ng-invalid ng-dirty':
+          <!-- multi -->
+          <p-multiSelect
+            id="{{ item.id }}"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                validateForm && control.controls[item.formControl].errors
+            }"
+            placeholder="{{ item.placeholder }}"
+            *ngIf="item.type === 'multi'"
+            [options]="item.options"
+            formControlName="{{ item.formControl }}"
+            styleClass="p-0 w-full"
+            optionLabel="description"
+            (onChange)="onChange(item.onChange)"
+            maxSelectedLabels="100"
+          ></p-multiSelect>
+
+          <!-- radioButton -->
+          <div
+            id="{{ item.id }}"
+            *ngIf="item.type === 'radio-button'"
+            class="flex gap-3"
+          >
+            <div
+              *ngFor="let listRadioButton of item.options"
+              class="flex align-items-center gap-2"
+            >
+              <p-radioButton
+                [ngClass]="{
+                  'ng-invalid ng-dirty':
                     validateForm && control.controls[item.formControl].errors
-                  }" placeholder={{item.placeholder}} *ngIf="item.type === 'multi'" [options]="item.options"
-                        formControlName={{item.formControl}} styleClass="p-0 w-full" optionLabel="description"
-                        (onChange)="onChange(item.onChange)" maxSelectedLabels="100"></p-multiSelect>
+                }"
+                [value]="listRadioButton.code"
+                formControlName="{{ item.formControl }}"
+                (onClick)="onChange(item.onChange)"
+              ></p-radioButton>
+              <label>{{ listRadioButton.description }}</label>
+            </div>
+            @if(control.controls[item.formControl].value == 'other'){
+            <input
+              pInputText
+              type="text"
+              formControlName="{{ item.formControlOther }}"
+            />
+            }
+          </div>
 
-                    <!-- radioButton -->
-                    <div id={{item.id}} *ngIf="item.type === 'radio-button'" class="flex gap-3">
-                        <div *ngFor="let listRadioButton of item.options" class="flex align-items-center gap-2">
-                            <p-radioButton [ngClass]="{
-                            'ng-invalid ng-dirty':
-                            validateForm && control.controls[item.formControl].errors
-                          }" [value]="listRadioButton.code" formControlName={{item.formControl}}
-                                (onClick)="onChange(item.onChange)"></p-radioButton>
-                            <label>{{listRadioButton.description}}</label>
-                        </div>
-                        @if(control.controls[item.formControl].value == 'other'){
-                        <input pInputText type="text" formControlName={{item.formControlOther}} />
-                        }
-                    </div>
-
-                    <!-- selectButton -->
-                    <div class="d-flex" *ngIf="item.type === 'select-button'">
-                        <p-selectButton id={{item.id}} (onChange)="onChange(item.onChange)" [options]="item.options"
-                            formControlName={{item.formControl}} optionValue="code">
-                            <ng-template let-item>
-                                <span>{{item.description}}</span>
-                            </ng-template>
-                        </p-selectButton>
-                        <!-- <input type="text" pInputText [attr.disabled]="item.disabled"
+          <!-- selectButton -->
+          <div class="d-flex" *ngIf="item.type === 'select-button'">
+            <p-selectButton
+              id="{{ item.id }}"
+              (onChange)="onChange(item.onChange)"
+              [options]="item.options"
+              formControlName="{{ item.formControl }}"
+              optionValue="code"
+            >
+              <ng-template let-item>
+                <span>{{ item.description }}</span>
+              </ng-template>
+            </p-selectButton>
+            <!-- <input type="text" pInputText [attr.disabled]="item.disabled"
                         formControlName={{item.formControlSecondary}}> -->
-                    </div>
+          </div>
 
-                    <!-- table -->
-                    <p-table id={{item.id}} *ngIf="item.type === 'table'" [scrollable]="true"
-                        scrollHeight={{item.scrollHeight}} [columns]=item.colsTable
-                        styleClass="p-datatable-striped p-datatable-sm" [value]=item.rowsTable>
-                        <ng-template pTemplate="header" let-columns>
-                            <tr>
-                                <th *ngFor="let col of columns">
-                                    <span *ngIf="col.filed !== 'action'">{{ col.header }}</span>
-                                    <span *ngIf="col.filed === 'action'">Ação</span>
-                                </th>
+          <!-- table -->
+          <p-table
+            id="{{ item.id }}"
+            *ngIf="item.type === 'table'"
+            [scrollable]="true"
+            scrollHeight="{{ item.scrollHeight }}"
+            [columns]="item.colsTable"
+            styleClass="p-datatable-striped p-datatable-sm"
+            [value]="item.rowsTable"
+          >
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th *ngFor="let col of columns">
+                  <span *ngIf="col.filed !== 'action'">{{ col.header }}</span>
+                  <span *ngIf="col.filed === 'action'">Ação</span>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns">
+                  <div *ngIf="col.field !== 'button'">
+                    {{ rowData[col.field] }}
+                  </div>
+                  <div *ngIf="col.field === 'action'">
+                    <p-button
+                      *ngFor="let action of item.buttonsTable"
+                      styleClass="{{ action.styleClass }}"
+                      label="{{ action.label }}"
+                      (click)="action.onCLick(rowData)"
+                      icon="{{ action.icon }}"
+                    ></p-button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer" let-columns>
+              <tr *ngFor="let footer of item.rowsFooter">
+                <td colspan="12">
+                  <span class="font-normal">{{ footer.text }}:</span>
+                  {{ footer.value }}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
 
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-rowData let-columns="columns">
-                            <tr>
-                                <td *ngFor="let col of columns">
-                                    <div *ngIf="col.field !== 'button'">
-                                        {{ rowData[col.field] }}
-                                    </div>
-                                    <div *ngIf="col.field === 'action'">
-                                        <p-button *ngFor="let action of item.buttonsTable"
-                                            styleClass={{action.styleClass}} label={{action.label}}
-                                            (click)="action.onCLick(rowData)" icon={{action.icon}}></p-button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="footer" let-columns>
-                            <tr *ngFor="let footer of item.rowsFooter">
-                                <td colspan=12><span class="font-normal">{{footer.text}}:</span> {{footer.value}}</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
+          <!-- inputSwitch -->
+          <div class="d-flex" *ngIf="item.type === 'switch'">
+            <p-inputSwitch
+              id="{{ item.id }}"
+              formControlName="{{ item.formControl }}"
+              class="mr-10"
+              (onChange)="onChange(item.onChange)"
+            ></p-inputSwitch>
+            <p translate="{{ item.label }}"></p>
+          </div>
 
-                    <!-- inputSwitch -->
-                    <div class="d-flex" *ngIf="item.type === 'switch'">
-                        <p-inputSwitch id={{item.id}} formControlName={{item.formControl}} class="mr-10"
-                            (onChange)="onChange(item.onChange)"></p-inputSwitch>
-                        <p translate={{item.label}}></p>
-                    </div>
+          <!-- password -->
+          <p-password
+            id="{{ item.id }}"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                validateForm && control.controls[item.formControl].errors
+            }"
+            placeholder="{{ item.placeholder }}"
+            *ngIf="item.type === 'password'"
+            [feedback]="false"
+            formControlName="{{ item.formControl }}"
+            (onChange)="onChange(item.onChange)"
+            styleClass="w-full"
+            [toggleMask]="true"
+          ></p-password>
 
-                    <!-- password -->
-                    <p-password id={{item.id}} [ngClass]="{
-                    'ng-invalid ng-dirty':
-                    validateForm && control.controls[item.formControl].errors
-                  }" placeholder={{item.placeholder}} *ngIf="item.type === 'password'" [feedback]="false"
-                        formControlName={{item.formControl}} (onChange)="onChange(item.onChange)" styleClass="w-full"
-                        [toggleMask]="true"></p-password>
+          <!-- photo  -->
+          <div id="{{ item.id }}" class="camera" *ngIf="item.type === 'photo'">
+            <video id="video" class="foto" autoplay>
+              Vídeo não disponível.
+            </video>
+            <canvas id="canvas" class="foto" style="display: none"></canvas>
+            <button
+              pButton
+              icon="pi pi-times"
+              class="remove-file"
+              id="icon-remove"
+              [rounded]="true"
+              style="visibility: collapse"
+              (click)="removePhoto()"
+            ></button>
+            <button
+              pButton
+              icon="pi pi-camera"
+              [rounded]="true"
+              (click)="capturePhoto(item.formControl)"
+              id="button"
+            ></button>
+          </div>
 
-                    <!-- photo  -->
-                    <div id={{item.id}} class="camera" *ngIf="item.type === 'photo'">
-                        <video id="video" class="foto" autoplay>Vídeo não disponível.</video>
-                        <canvas id="canvas" class="foto" style="display: none;"></canvas>
-                        <button pButton icon="pi pi-times" class="remove-file" id="icon-remove" [rounded]="true"
-                            style="visibility: collapse;" (click)="removePhoto()"></button>
-                        <button pButton icon="pi pi-camera" [rounded]="true" (click)="capturePhoto(item.formControl)"
-                            id="button"></button>
-                    </div>
+          <!-- likert  -->
+          <p-table
+            id="{{ item.id }}"
+            *ngIf="item.type === 'likert'"
+            [scrollable]="true"
+            scrollHeight="{{ item.scrollHeight }}"
+            [columns]="item.colsTable"
+            styleClass="p-datatable-striped p-datatable-sm"
+            [value]="item.rowsTable"
+          >
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th style="width: 4rem"></th>
+                <th *ngFor="let col of columns">
+                  <span>{{ col.header }}</span>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template
+              pTemplate="body"
+              let-row
+              let-rowIndex="rowIndex"
+              let-columns="columns"
+              formArrayName="{{ item.formControl }}"
+            >
+              <tr>
+                <td>
+                  {{ row }}
+                </td>
+                @for (control of columns; track item; let index = $index) {
+                <td [formGroupName]="rowIndex">
+                  <p-radioButton
+                    value="{{ columns[index].field }}+{{ row }}"
+                    formControlName="question{{ rowIndex }}"
+                  />
+                </td>
+                }
+              </tr>
+            </ng-template>
+          </p-table>
 
-                    <!-- likert  -->
-                    <p-table id={{item.id}} *ngIf="item.type === 'likert'" [scrollable]="true"
-                        scrollHeight={{item.scrollHeight}} [columns]=item.colsTable
-                        styleClass="p-datatable-striped p-datatable-sm" [value]=item.rowsTable>
-                        <ng-template pTemplate="header" let-columns>
-                            <tr>
-                                <th style="width: 4rem"></th>
-                                <th *ngFor="let col of columns">
-                                    <span>{{ col.header }}</span>
-                                </th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="columns"
-                            formArrayName="{{item.formControl}}">
-                            <tr>
-                                <td>
-                                    {{row}}
-                                </td>
-                                @for (control of columns; track item; let index = $index) {
-                                <td [formGroupName]="rowIndex">
-                                    <p-radioButton value="{{columns[index].field}}+{{row}}"
-                                        formControlName="question{{rowIndex}}" />
-                                </td>
-                                }
-                            </tr>
-                        </ng-template>
-                    </p-table>
+          <!-- editable table -->
+          <p-table
+            id="{{ item.id }}"
+            *ngIf="item.type === 'editable-table'"
+            [scrollable]="true"
+            scrollHeight="{{ item.scrollHeight }}"
+            [columns]="item.colsTable"
+            styleClass="p-datatable-striped p-datatable-sm"
+            [value]="item.rowsTable"
+            editMode="cell"
+          >
+            <!-- Cabeçalho da tabela -->
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th style="width: 4rem"></th>
+                <th *ngFor="let col of columns">
+                  <span>{{ col.header }}</span>
+                </th>
+              </tr>
+            </ng-template>
 
-                    <!-- editable table -->
-                    <p-table
-                    id="{{ item.id }}"
-                    *ngIf="item.type === 'editable-table'"
-                    [scrollable]="true"
-                    scrollHeight="{{ item.scrollHeight }}"
-                    [columns]="item.colsTable"
-                    styleClass="p-datatable-striped p-datatable-sm"
-                    [value]="item.rowsTable"
-                    editMode="cell">
-
-                    <!-- Cabeçalho da tabela -->
-                    <ng-template pTemplate="header" let-columns>
-                      <tr>
-                        <th style="width: 4rem"></th>
-                        <th *ngFor="let col of columns">
-                          <span>{{ col.header }}</span>
-                        </th>
-                      </tr>
+            <!-- Corpo da tabela -->
+            <ng-template
+              pTemplate="body"
+              let-row
+              let-rowIndex="rowIndex"
+              let-columns="columns"
+              formArrayName="{{ item.formControl }}"
+              let-editing="editing"
+            >
+              <tr>
+                <td>{{ row }}</td>
+                @for (control of columns; track item; let index = $index) {
+                <td
+                  [formGroupName]="rowIndex"
+                  [pEditableColumn]="row"
+                  pEditableColumnField="row"
+                >
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <input
+                        pInputText
+                        type="text"
+                        formControlName="_{{ control.field }}question{{
+                          rowIndex
+                        }}"
+                      />
                     </ng-template>
-
-                    <!-- Corpo da tabela -->
-                    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="columns"
-                      formArrayName="{{ item.formControl }}" let-editing="editing">
-                      <tr>
-                        <td>{{ row }}</td>
-                        @for (control of columns; track item; let index = $index) {
-                          <td [formGroupName]="rowIndex" [pEditableColumn]="row" pEditableColumnField="row">
-                            <p-cellEditor>
-                              <ng-template pTemplate="input">
-                                <input pInputText type="text" formControlName="_{{control.field}}question{{ rowIndex }}" />
-                              </ng-template>
-                              <ng-template pTemplate="output">
-                                <input pInputText type="text" formControlName="_{{control.field}}question{{ rowIndex }}" />
-                              </ng-template>
-                            </p-cellEditor>
-                          </td>
-                        }
-                      </tr>
+                    <ng-template pTemplate="output">
+                      <input
+                        pInputText
+                        type="text"
+                        formControlName="_{{ control.field }}question{{
+                          rowIndex
+                        }}"
+                      />
                     </ng-template>
-                  </p-table>
+                  </p-cellEditor>
+                </td>
+                }
+              </tr>
+            </ng-template>
+          </p-table>
 
-
-                    <!-- validação de item -->
-                    <div>
-                        <small class="danger-text"
-                            *ngIf="validateForm && control.controls[item.formControl] && control.controls[item.formControl].errors?.['required']">
-                            Campo obrigatório
-                        </small>
-                        <small class="danger-text"
-                            *ngIf="validateForm && control.controls[item.formControl] && control.controls[item.formControl].errors?.['email']">
-                            Email inválido
-                        </small>
-                    </div>
-
-                </div>
-            </div>
-
-            <p-divider
-                *ngIf="(buttonsStandard && buttonsStandard.length > 0) || (buttonsOptional && buttonsOptional.length > 0)"></p-divider>
-
-            <div class="buttons-form">
-                <div *ngFor="let button of buttonsStandard">
-                    <p-button *ngIf="button.type === 'clean'" styleClass="p-button-warning {{button.styleClass}}"
-                        label="Limpar" (click)="button.onCLick()" icon="pi pi-times"></p-button>
-                    <p-button *ngIf="button.type === 'filter'" styleClass="{{button.styleClass}}" label="Filtrar"
-                        (click)="button.onCLick()" icon="pi pi-search"></p-button>
-                    <p-button *ngIf="button.type === 'save'" styleClass="p-button-success {{button.styleClass}}"
-                        label="Salvar" (click)="button.onCLick()" icon="pi pi-save"></p-button>
-                    <p-button *ngIf="button.type === 'cancel'" styleClass="p-button-danger {{button.styleClass}}"
-                        label="Cancelar" (click)="button.onCLick()" icon="pi pi-times"></p-button>
-                </div>
-                <div *ngFor="let button of buttonsOptional">
-                    <p-button styleClass={{button.styleClass}} label={{button.label}} (click)=" button.onCLick()"
-                        icon={{button.icon}}></p-button>
-                </div>
-            </div>
+          <!-- validação de item -->
+          <div>
+            <small
+              class="danger-text"
+              *ngIf="validateForm && control.controls[item.formControl] && control.controls[item.formControl].errors?.['required']"
+            >
+              Campo obrigatório
+            </small>
+            <small
+              class="danger-text"
+              *ngIf="validateForm && control.controls[item.formControl] && control.controls[item.formControl].errors?.['email']"
+            >
+              Email inválido
+            </small>
+          </div>
         </div>
-    </form>
+      </div>
+
+      <p-divider
+        *ngIf="
+          (buttonsStandard && buttonsStandard.length > 0) ||
+          (buttonsOptional && buttonsOptional.length > 0)
+        "
+      ></p-divider>
+
+      <div class="buttons-form">
+        <div *ngFor="let button of buttonsStandard">
+          <p-button
+            *ngIf="button.type === 'clean'"
+            styleClass="p-button-warning {{ button.styleClass }}"
+            label="Limpar"
+            (click)="button.onCLick()"
+            icon="pi pi-times"
+          ></p-button>
+          <p-button
+            *ngIf="button.type === 'filter'"
+            styleClass="{{ button.styleClass }}"
+            label="Filtrar"
+            (click)="button.onCLick()"
+            icon="pi pi-search"
+          ></p-button>
+          <p-button
+            *ngIf="button.type === 'save'"
+            styleClass="p-button-success {{ button.styleClass }}"
+            label="Salvar"
+            (click)="button.onCLick()"
+            icon="pi pi-save"
+          ></p-button>
+          <p-button
+            *ngIf="button.type === 'cancel'"
+            styleClass="p-button-danger {{ button.styleClass }}"
+            label="Cancelar"
+            (click)="button.onCLick()"
+            icon="pi pi-times"
+          ></p-button>
+        </div>
+        <div *ngFor="let button of buttonsOptional">
+          <p-button
+            styleClass="{{ button.styleClass }}"
+            label="{{ button.label }}"
+            (click)="button.onCLick()"
+            icon="{{ button.icon }}"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>

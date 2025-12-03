@@ -39,7 +39,8 @@ export type TTypes =
   "text-area" |
   "tree-select" |
   "upload-files" |
-  "editable-table"
+  "editable-table" | 
+  "editor"
 export interface IForm {
   id: number | string,
   label?: string,
