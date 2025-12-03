@@ -136,6 +136,39 @@
           }
         }
       }
+    },
+    "form-dynamic-ajax": {
+      "projectType": "library",
+      "root": "projects/form-dynamic-ajax",
+      "sourceRoot": "projects/form-dynamic-ajax/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/form-dynamic-ajax/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-dynamic-ajax/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-dynamic-ajax/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/form-dynamic-ajax/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {

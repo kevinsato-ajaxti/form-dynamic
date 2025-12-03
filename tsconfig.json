@@ -16,6 +16,9 @@
       "form": [
         "dist/form"
       ],
+      "form-dynamic-ajax": [
+        "./dist/form-dynamic-ajax"
+      ],
       "form-dynamic-angular": [
         "dist/form-dynamic-angular"
       ]

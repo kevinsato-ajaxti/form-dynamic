@@ -1,0 +1,132 @@
+.div-title span {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.buttons-form {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.danger-text {
+    color: #f18282;
+}
+
+.drag-image {
+    height: auto;
+    width: 100%;
+    border-radius: 10px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 20px;
+    top: 20px;
+    max-height: 250px;
+    color: #000;
+    padding: 20px;
+    text-align: center;
+    overflow: auto;
+}
+
+.drag-image h6 {
+    font-size: 20px;
+}
+
+.drag-image .file-name {
+    font-size: 14px;
+}
+
+.drag-image i {
+    font-size: 3rem;
+}
+
+.subtitle span {
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+.subtitle {
+    align-items: baseline;
+}
+
+.mh-75 {
+    min-height: 75px !important
+}
+
+input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.preview-img {
+    align-items: center;
+    border-radius: 5px;
+    display: flex;
+    height: 140px;
+    justify-content: center;
+    margin: 10px;
+    max-width: 180px;
+    min-height: 140px;
+    min-width: 180px;
+    padding: 0px 20px;
+    position: relative;
+}
+
+.preview-img span {
+    position: absolute;
+    overflow-wrap: break-word;
+}
+
+.remove-file {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 22px;
+    width: 22px;
+    top: 5px;
+    right: 5px;
+    border-radius: 50%;
+    background: #bbb;
+    color: #333;
+    cursor: pointer;
+    font-size: .8rem !important;
+}
+
+.preview-img img {
+    max-width: 100%;
+    opacity: .8;
+}
+
+.camera {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+
+}
+
+.foto {
+    max-width: 186px;
+    min-height: 140px;
+    min-width: 180px;
+    border: 1px dashed #000;
+    border-radius: 5px;
+    margin-bottom: 1em;
+}
+
+.preview-photo {
+    position: relative;
+}
+
+.h-0 {
+    height: 0;
+}

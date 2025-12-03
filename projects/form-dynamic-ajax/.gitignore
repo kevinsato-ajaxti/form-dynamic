@@ -1,0 +1,36 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment
+.environment
+*.env
+src/environments/*
+
+# Angular build
+dist/
+out-tsc/
+
+# IDEs
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Angular library build
+projects/*/dist/
+projects/*/out-tsc/
+
+# Logs
+*.log
+
+# Package lock (opcional, se quiser ignorar)
+# package-lock.json
