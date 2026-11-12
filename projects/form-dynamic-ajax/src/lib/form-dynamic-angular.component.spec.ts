@@ -67,4 +67,34 @@ describe('FormDynamicAngularComponent', () => {
     expect(fixture.nativeElement.querySelector('p-toggleswitch')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('p-autocomplete')).toBeTruthy();
   });
+
+  it('should render Likert and editable table label columns without inline styles', () => {
+    fixture.componentRef.setInput('control', new FormGroup({
+      likert: new FormControl([]),
+      editable: new FormControl([]),
+    }));
+    fixture.componentRef.setInput('form', [
+      {
+        id: 'likert',
+        type: 'likert',
+        formControl: 'likert',
+        colsTable: [],
+        rowsTable: [],
+      },
+      {
+        id: 'editable',
+        type: 'editable-table',
+        formControl: 'editable',
+        colsTable: [],
+        rowsTable: [],
+      },
+    ]);
+    fixture.detectChanges();
+
+    const labelColumns = fixture.nativeElement.querySelectorAll('.fd-table-label-column');
+    expect(labelColumns.length).toBe(2);
+    labelColumns.forEach((column: HTMLElement) => {
+      expect(column.hasAttribute('style')).toBeFalse();
+    });
+  });
 });

@@ -620,7 +620,7 @@
                                 >
                                 <ng-template pTemplate="header" let-columns>
                                   <tr>
-                                    <th style="width: 4rem"></th>
+                                    <th class="fd-table-label-column"></th>
                                     @for (col of columns; track col) {
                                       <th>
                                         <span>{{ col.header }}</span>
@@ -665,7 +665,7 @@
                                   <!-- Cabeçalho da tabela -->
                                   <ng-template pTemplate="header" let-columns>
                                     <tr>
-                                      <th style="width: 4rem"></th>
+                                      <th class="fd-table-label-column"></th>
                                       @for (col of columns; track col) {
                                         <th>
                                           <span>{{ col.header }}</span>

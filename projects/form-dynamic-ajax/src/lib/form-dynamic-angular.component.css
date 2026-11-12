@@ -130,3 +130,7 @@ input[type="file"] {
 .h-0 {
     height: 0;
 }
+
+.fd-table-label-column {
+    width: 4rem;
+}
