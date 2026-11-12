@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
-import { DropdownModule } from 'primeng/dropdown';
-import { CalendarModule } from 'primeng/calendar';
+import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { AutoCompleteModule } from 'primeng/autocomplete';
@@ -15,9 +15,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { EditorModule } from 'primeng/editor';
 import { FormDynamicAngularComponent } from './form-dynamic-angular.component';
 import { MessageService } from 'primeng/api';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { CheckboxModule } from 'primeng/checkbox';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { CommonModule } from '@angular/common';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -26,50 +26,44 @@ import { TableModule } from 'primeng/table';
 import { PasswordModule } from 'primeng/password';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputMaskModule } from 'primeng/inputmask';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http);
 }
-@NgModule({
-  declarations: [
-    FormDynamicAngularComponent
-  ],
-  imports: [
-    InputMaskModule,
-    InputNumberModule,
-    PasswordModule,
-    ButtonModule,
-    TableModule,
-    FileUploadModule,
-    MultiSelectModule,
-    CommonModule,
-    SelectButtonModule,
-    InputSwitchModule,
-    CheckboxModule,
-    InputTextareaModule,
-    InputTextModule,
-    DividerModule,
-    CalendarModule,
-    DropdownModule,
-    TreeSelectModule,
-    RadioButtonModule,
-    AutoCompleteModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    OverlayPanelModule,
-    EditorModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      },
-    })
-  ],
-  exports: [
-    FormDynamicAngularComponent
-  ]
-})
+@NgModule({ declarations: [
+        FormDynamicAngularComponent
+    ],
+    exports: [
+        FormDynamicAngularComponent
+    ], imports: [InputMaskModule,
+        InputNumberModule,
+        PasswordModule,
+        ButtonModule,
+        TableModule,
+        FileUploadModule,
+        MultiSelectModule,
+        CommonModule,
+        SelectButtonModule,
+        ToggleSwitchModule,
+        CheckboxModule,
+        TextareaModule,
+        InputTextModule,
+        DividerModule,
+        DatePickerModule,
+        SelectModule,
+        TreeSelectModule,
+        RadioButtonModule,
+        AutoCompleteModule,
+        ReactiveFormsModule,
+        PopoverModule,
+        EditorModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            },
+        })], providers: [provideHttpClient(withInterceptorsFromDi())] })
 
 export class FormDynamicAngularModule { }

@@ -114,6 +114,7 @@ export interface IButtonsTable {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'form-dynamic-angular',
+  standalone: false,
   templateUrl: 'form-dynamic-angular.component.html',
   styleUrls: ['form-dynamic-angular.component.css']
 })

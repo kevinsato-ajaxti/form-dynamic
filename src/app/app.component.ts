@@ -1,11 +1,10 @@
 import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { SidebarModule } from 'primeng/sidebar';
 import { ButtonModule } from 'primeng/button';
-import { CommonModule } from '@angular/common';
+
 import { OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { FormDynamicAngularModule, IForm } from 'projects/form-dynamic-angular/src/public-api';
+import { FormDynamicAngularModule, IForm } from 'projects/form-dynamic-ajax/src/public-api';
 import { MenuModule } from 'primeng/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,13 +17,10 @@ import { min, Observable } from 'rxjs';
 import { InstallationComponent } from './pages/installation/installation.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
+    selector: 'app-root',
+    imports: [
     RouterOutlet,
-    SidebarModule,
     ButtonModule,
-    CommonModule,
     RouterLink,
     RouterLinkActive,
     FormDynamicAngularModule,
@@ -36,9 +32,9 @@ import { InstallationComponent } from './pages/installation/installation.compone
     MatListModule,
     ToolbarModule,
     InstallationComponent
-  ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
 

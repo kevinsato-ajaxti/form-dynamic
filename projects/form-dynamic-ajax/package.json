@@ -1,9 +1,14 @@
 {
   "name": "form-dynamic-ajax",
-  "version": "7.0.8",
+  "version": "8.0.0",
   "peerDependencies": {
-    "@angular/common": "^17.3.0",
-    "@angular/core": "^17.3.0"
+    "@angular/common": "^21.2.0",
+    "@angular/core": "^21.2.0",
+    "@angular/forms": "^21.2.0",
+    "@ngx-translate/core": "^16.0.4",
+    "@ngx-translate/http-loader": "^16.0.1",
+    "primeng": "^21.1.0",
+    "quill": "^2.0.3"
   },
   "dependencies": {
     "tslib": "^2.3.0"
